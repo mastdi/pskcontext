@@ -41,6 +41,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry==1.3.2
           poetry install --no-root
+          poetry run conan profile detect
           poetry run conan install --requires openssl/3.0.8 --build=missing -o openssl/*:shared=True -of build
           source build/conanbuild.sh
           source build/conanrun.sh
@@ -68,6 +69,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install poetry==1.3.2
           poetry install --no-root
+          poetry run conan profile detect
           poetry run conan install --requires openssl/3.0.8 --build=missing -o openssl/*:shared=True -of build
 #          poetry build
 #          poetry install
