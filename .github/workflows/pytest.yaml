@@ -50,6 +50,8 @@ jobs:
       - name: Run pytest
         run: |
           export PSKCONTEXT_EXPECTED_OPENSSL_VERSION=3.0.8
+          source build/conanbuild.sh
+          source build/conanrun.sh
           poetry run pytest
   test-windows:
     needs: coverage
