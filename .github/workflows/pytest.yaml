@@ -43,7 +43,6 @@ jobs:
           poetry install --no-root
           poetry run conan profile detect
           poetry run conan install --requires openssl/3.0.8 --build=missing -o openssl/*:shared=True -of build
-          echo "PSKCONTEXT_EXPECTED_OPENSSL_VERSION=3.0.8" >> $GITHUB_ENV
           sed -i 's/export PATH=/echo /' build/conanrunenv-*
           sed -i 's/bin:$PATH"/bin" >> $GITHUB_PATH/' build/conanrunenv-*
           source build/conanbuild.sh
