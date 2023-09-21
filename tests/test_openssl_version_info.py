@@ -18,7 +18,7 @@ from pskcontext import PSKContext
 
 
 def _expected_openssl_version_info():
-    if os.getenv("CI"):
+    if os.getenv("EXPECTED_OPENSSL_VERSION"):
         # Currently only OpenSSL 3.0.8
         return 3, 0, 0, 8, 0
     return ssl.OPENSSL_VERSION_INFO
