@@ -11,13 +11,17 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+import os
+import ssl
 
 from pskcontext import PSKContext
 
 
 def _expected_openssl_version_info():
-    # Currently only OpenSSL 3.0.8
-    return 3, 0, 0, 8, 0
+    if os.getenv("CI"):
+        # Currently only OpenSSL 3.0.8
+        return 3, 0, 0, 8, 0
+    return ssl.OPENSSL_VERSION_INFO
 
 
 def test_openssl_version_info():
