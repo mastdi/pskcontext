@@ -56,3 +56,12 @@ jobs:
           source build/conanbuild.sh
           source build/conanrun.sh
           poetry run pytest
+    publish-coverage:
+      runs-on: ubuntu-latest
+      needs: test-ubuntu
+      steps:
+        - name: Pytest coverage comment
+          uses: MishaKav/pytest-coverage-comment@main
+          with:
+            pytest-coverage-path: ./pytest-coverage.txt
+            junitxml-path: ./pytest.xml
