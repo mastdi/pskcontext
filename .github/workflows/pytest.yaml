@@ -50,6 +50,8 @@ jobs:
           poetry build
           poetry install
       - name: Run pytest
+        env:
+          EXPECTED_OPENSSL_VERSION: 3.0.8
         run: |
           source build/conanbuild.sh
           source build/conanrun.sh
