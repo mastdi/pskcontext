@@ -14,12 +14,20 @@
 from distutils.command.build_ext import build_ext
 from distutils.core import Extension
 from distutils.errors import CCompilerError, DistutilsExecError, DistutilsPlatformError
+from pathlib import Path
+
+library_dirs = []
+runner_conan_base_path = Path("/home/runner/.conan2")
+if runner_conan_base_path.is_dir():
+    for sub_directory in runner_conan_base_path.rglob("*/p/lib"):
+        library_dirs.append(str(sub_directory.resolve()))
 
 ext_modules = [
     Extension(
         "_pskcontext",
         sources=["Modules/_bind.c", "Modules/_pskcontext.c"],
         libraries=["ssl", "crypto"],
+        library_dirs=library_dirs,
     )
 ]
 
