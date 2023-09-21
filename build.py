@@ -17,10 +17,14 @@ from distutils.errors import CCompilerError, DistutilsExecError, DistutilsPlatfo
 from pathlib import Path
 
 library_dirs = []
-runner_conan_base_path = Path("/home/runner/.conan2")
-if runner_conan_base_path.is_dir():
-    for sub_directory in runner_conan_base_path.rglob("*/p/lib"):
-        library_dirs.append(str(sub_directory.resolve()))
+try:
+    runner_conan_base_path = Path.home() / ".conan2"
+    if runner_conan_base_path.is_dir():
+        for sub_directory in runner_conan_base_path.rglob("*/p/lib"):
+            library_dirs.append(str(sub_directory.resolve()))
+except RuntimeError:
+    # If the home directory can’t be resolved, RuntimeError is raised
+    pass
 
 ext_modules = [
     Extension(
