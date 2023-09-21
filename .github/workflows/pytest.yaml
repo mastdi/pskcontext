@@ -43,6 +43,8 @@ jobs:
           poetry install --no-root
           poetry run conan profile detect
           poetry run conan install --requires openssl/3.0.8 --build=missing -o openssl/*:shared=True -of build
+          sed -i 's/export PATH=/echo /' build/conanrunenv-*
+          sed -i 's/bin:$PATH"/bin" >> $GITHUB_PATH/' build/conanrunenv-*
           source build/conanbuild.sh
           source build/conanrun.sh
           poetry build
@@ -73,8 +75,10 @@ jobs:
           poetry install --no-root
           poetry run conan profile detect
           poetry run conan install --requires openssl/3.0.8 --build=missing -o openssl/*:shared=True -of build
-#          poetry build
-#          poetry install
+          Invoke-Expression -Command "build/conanbuild.bat"
+          Invoke-Expression -Command "build/conanrun.bat"
+          poetry build
+          poetry install
       - name: Get list of rules
         shell: pwsh
         run: |
