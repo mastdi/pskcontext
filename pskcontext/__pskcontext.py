@@ -52,6 +52,10 @@ def create_default_psk_context(
 ) -> PSKContext:
     if not isinstance(purpose, _ASN1Object):
         raise TypeError(purpose)
-    psk_context = PSKContext()
+    psk_context = PSKContext(
+        ssl.PROTOCOL_TLS_CLIENT
+        if purpose == Purpose.CLIENT_AUTH
+        else ssl.PROTOCOL_TLS_SERVER
+    )
 
     return psk_context
