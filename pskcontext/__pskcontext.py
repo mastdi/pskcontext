@@ -13,12 +13,17 @@
 #  limitations under the License.
 import ssl
 import typing
-from ssl import _ASN1Object
+from typing import Any
 
 import _pskcontext
 
 Purpose = ssl.Purpose
-ssl.create_default_context()
+
+
+class _PSKObject(ssl.SSLObject):
+    def __new__(cls: typing.Type["_PSKObject"]) -> "_PSKObject":
+        psk_object = super().__new__(cls)
+        return psk_object
 
 
 class PSKContext(ssl.SSLContext):
@@ -46,16 +51,22 @@ class PSKContext(ssl.SSLContext):
 
         return major, minor, fix, patch, status
 
+    def __new__(cls, protocol: int = ..., *args: Any, **kwargs: Any):  # type: ignore
+        psk = kwargs.pop("psk")
+        context = super().__new__(cls, protocol, *args, **kwargs)
+        context.sslobject_class = _PSKObject
+        setattr(context.sslobject_class, "psk", psk)
+        return context
+
 
 def create_default_psk_context(
     purpose: Purpose = Purpose.CLIENT_AUTH, *, psk: bytes
 ) -> PSKContext:
-    if not isinstance(purpose, _ASN1Object):
-        raise TypeError(purpose)
     psk_context = PSKContext(
         ssl.PROTOCOL_TLS_CLIENT
         if purpose == Purpose.CLIENT_AUTH
-        else ssl.PROTOCOL_TLS_SERVER
+        else ssl.PROTOCOL_TLS_SERVER,
+        psk=psk,
     )
 
     return psk_context
