@@ -1,3 +1,4 @@
+import socket
 import ssl
 
 from pskcontext import Purpose, create_default_psk_context
@@ -16,3 +17,14 @@ def test_ssl_object():
     ssl_object = context.wrap_bio(ssl.MemoryBIO(), ssl.MemoryBIO())
 
     assert getattr(ssl_object, "psk") == psk
+
+
+def test_ssl_socket():
+    psk = b"psk-key"
+    context = create_default_psk_context(Purpose.CLIENT_AUTH, psk=psk)
+    context.check_hostname = False
+
+    with socket.socket(socket.AF_INET) as s:
+        ssl_socket = context.wrap_socket(s, server_side=False)
+
+    assert getattr(ssl_socket, "psk") == psk

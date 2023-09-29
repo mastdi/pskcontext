@@ -26,6 +26,12 @@ class _PSKObject(ssl.SSLObject):
         return psk_object
 
 
+class _PSKSocket(ssl.SSLSocket):
+    def __new__(cls: typing.Type["_PSKSocket"], *args, **kwargs) -> "_PSKSocket":
+        psk_socket = super().__new__(cls, *args, **kwargs)
+        return psk_socket
+
+
 class PSKContext(ssl.SSLContext):
     @property
     def openssl_version_info(self) -> typing.Tuple[int, int, int, int, int]:
@@ -53,20 +59,24 @@ class PSKContext(ssl.SSLContext):
 
     def __new__(cls, protocol: int = ..., *args: Any, **kwargs: Any):  # type: ignore
         psk = kwargs.pop("psk")
+        setattr(_PSKObject, "psk", psk)
+        setattr(_PSKSocket, "psk", psk)
         context = super().__new__(cls, protocol, *args, **kwargs)
         context.sslobject_class = _PSKObject
-        setattr(context.sslobject_class, "psk", psk)
+        context.sslsocket_class = _PSKSocket
+
         return context
 
 
 def create_default_psk_context(
-    purpose: Purpose = Purpose.CLIENT_AUTH, *, psk: bytes
+    purpose: Purpose = Purpose.CLIENT_AUTH, *, psk: bytes, **kwargs
 ) -> PSKContext:
     psk_context = PSKContext(
         ssl.PROTOCOL_TLS_CLIENT
         if purpose == Purpose.CLIENT_AUTH
         else ssl.PROTOCOL_TLS_SERVER,
         psk=psk,
+        **kwargs
     )
 
     return psk_context
