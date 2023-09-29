@@ -13,8 +13,12 @@
 #  limitations under the License.
 import ssl
 import typing
+from ssl import _ASN1Object
 
 import _pskcontext
+
+Purpose = ssl.Purpose
+ssl.create_default_context()
 
 
 class PSKContext(ssl.SSLContext):
@@ -41,3 +45,13 @@ class PSKContext(ssl.SSLContext):
         major = library_version & 0xFF
 
         return major, minor, fix, patch, status
+
+
+def create_default_psk_context(
+    purpose: Purpose = Purpose.CLIENT_AUTH, *, psk: bytes
+) -> PSKContext:
+    if not isinstance(purpose, _ASN1Object):
+        raise TypeError(purpose)
+    psk_context = PSKContext()
+
+    return psk_context

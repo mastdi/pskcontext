@@ -11,6 +11,6 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from .__pskcontext import PSKContext
+from .__pskcontext import Purpose, create_default_psk_context
 
-__all__ = ["PSKContext"]
+__all__ = ["create_default_psk_context", "Purpose"]

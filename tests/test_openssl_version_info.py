@@ -14,7 +14,7 @@
 import os
 import ssl
 
-from pskcontext import PSKContext
+from pskcontext import Purpose, create_default_psk_context
 
 
 def _expected_openssl_version_info():
@@ -25,7 +25,7 @@ def _expected_openssl_version_info():
 
 
 def test_openssl_version_info():
-    context = PSKContext()
+    context = create_default_psk_context(Purpose.CLIENT_AUTH, psk=b"")
 
     version_info = context.openssl_version_info
     assert _expected_openssl_version_info() == version_info
